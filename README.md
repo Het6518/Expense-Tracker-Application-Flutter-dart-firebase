@@ -1,124 +1,273 @@
+# Expense Tracker Application
 
-# 🧾 Expense Tracking App 📊
+A cross-platform expense tracking application built with Flutter that allows users to record expenses, organize them with categories and tags, and review their spending patterns.
 
-![Expense Tracker](https://github.com/Willie-Conway/Expense-Tracking-App/blob/76b222af46f5f8db00d0970c032a5ec6a436859b/Screenshots/Expense%20Tracker.gif)
+The app uses **Provider** for state management and **Firebase** (Authentication + Firestore) as the backend for secure cloud-based data storage.
 
-Welcome to the **Expense Tracking App**! This is a Flutter application designed to help users track their expenses, manage categories and tags, and visualize their spending habits. 🚀
-
----
-
-## 💡 Features
-
-- **Add & Manage Expenses**: Keep track of all your spending by adding detailed expense entries.
-- **Category Management**: Categorize your expenses to better understand where your money goes.
-- **Tag Management**: Organize your expenses further with tags for specific groups or events.
-- **Sorting & Filtering**: Sort your expenses by date, amount, or category, and filter them by specific criteria.
-- **Data Visualization**: Visualize your expenses using beautiful charts. 📈
-- **Persistent Data**: Your data is saved locally so it remains available even after restarting the app. 💾
+Because it is built with Flutter, the same codebase runs on **Android, iOS, Web, Windows, Linux, and macOS**.
 
 ---
 
-## 📱 Screenshots
+## Overview
 
-### 🏠 Home Screen
-View your expenses, sorted by date or category.
+Expense Tracker helps users manage their personal finances by allowing them to:
 
-![Home Screen](https://github.com/Willie-Conway/Expense-Tracking-App/blob/76b222af46f5f8db00d0970c032a5ec6a436859b/Screenshots/Empty%20home%20screen%20when%20the%20user%20launches%20the%20application.png)
+- Record daily expenses
+- Categorize spending
+- Tag transactions
+- Analyze expenses by date or category
+- Store data securely in the cloud using Firebase
 
-### ➕ Add Expense Screen
-Easily add new expenses with categories, tags, and notes.
-
-![Add Expense Screen](https://github.com/Willie-Conway/Expense-Tracking-App/blob/76b222af46f5f8db00d0970c032a5ec6a436859b/Screenshots/Screen%20to%20add%20a%20new%20expense.png)
-
-### 🗂️ Category Management
-Manage your expense categories.
-
-![Category Management](https://github.com/Willie-Conway/Expense-Tracking-App/blob/76b222af46f5f8db00d0970c032a5ec6a436859b/Screenshots/Home%20screen%20showing%20all%20expenses%20by%20category.png)
+The project demonstrates a clean architecture separating UI, state management, repository logic, and backend services.
 
 ---
 
-## 🛠️ Installation
+## Features
 
-To get started with the project, follow these steps:
+### Expense Management
+
+- Add new expenses
+- Edit existing expenses
+- Delete expenses with swipe actions
+- Store amount, payee, note, date, category, and tag
+
+### Organization
+
+- Group expenses by date
+- Group expenses by category
+- View category spending totals
+
+### Category Management
+
+- Create custom categories
+- Delete categories
+- Seed default categories automatically
+
+### Tag Management
+
+- Create tags for expense classification
+- Delete tags
+- Seed default tags automatically
+
+### Cloud Persistence
+
+- All data stored in Firebase Firestore
+- User identity managed via Firebase Anonymous Authentication
+- Each user has isolated data storage
+
+---
+
+## Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| Flutter | UI framework |
+| Dart | Programming language |
+| Provider | State management |
+| Firebase Core | Initializes Firebase |
+| Firebase Authentication | Anonymous login |
+| Cloud Firestore | Cloud database |
+| Intl | Date formatting |
+| Collection | Grouping and list utilities |
+
+---
+
+## Architecture
+
+The application follows a layered architecture:
+
+```
+Presentation Layer       →   Flutter Screens & Widgets
+State Layer              →   ExpenseProvider (ChangeNotifier)
+Repository Layer         →   FirebaseExpenseRepository
+Backend Layer            →   Firebase Authentication + Cloud Firestore
+Model Layer              →   Expense, ExpenseCategory, Tag
+```
+
+**Data flow:**
+
+```
+UI → Provider → Repository → Firebase
+```
+
+This architecture keeps UI components separate from backend logic and improves maintainability.
+
+---
+
+## Folder Structure
+
+```
+lib/
+ ├── models/
+ │     Expense.dart
+ │     ExpenseCategory.dart
+ │     Tag.dart
+ │
+ ├── providers/
+ │     ExpenseProvider.dart
+ │
+ ├── repositories/
+ │     FirebaseExpenseRepository.dart
+ │
+ ├── screens/
+ │     home_screen.dart
+ │     manage_categories.dart
+ │     manage_tags.dart
+ │
+ ├── widgets/
+ │     expense_list.dart
+ │     add_expense_dialog.dart
+ │
+ └── main.dart
+```
+
+**Platform folders** (`android/`, `ios/`, `web/`, `windows/`, `linux/`, `macos/`) allow Flutter to compile the app for multiple platforms.
+
+---
+
+## Firebase Backend
+
+### Services Used
+
+| Service | Purpose |
+|---|---|
+| Firebase Core | Initializes Firebase |
+| Firebase Authentication | Anonymous user authentication |
+| Cloud Firestore | Database for expenses, categories, and tags |
+
+### Firestore Data Structure
+
+```
+users/{uid}/expenses/{expenseId}
+users/{uid}/categories/{categoryId}
+users/{uid}/tags/{tagId}
+```
+
+Each authenticated user has their own private set of expenses.
+
+---
+
+## Data Models
+
+### Expense
+
+| Field | Description |
+|---|---|
+| `id` | Unique identifier |
+| `amount` | Transaction amount |
+| `categoryId` | Linked category |
+| `payee` | Recipient of the payment |
+| `note` | Optional description |
+| `date` | Date of transaction |
+| `tag` | Classification tag |
+
+> Represents a single financial transaction.
+
+### ExpenseCategory
+
+| Field | Description |
+|---|---|
+| `id` | Unique identifier |
+| `name` | Category name |
+| `isDefault` | Whether it was auto-seeded |
+
+> Represents a group of related expenses such as *Food* or *Transport*.
+
+### Tag
+
+| Field | Description |
+|---|---|
+| `id` | Unique identifier |
+| `name` | Tag label |
+
+> Tags provide additional classification like *Lunch* or *Vacation*.
+
+---
+
+## Default Categories
+
+The system automatically seeds the following categories for new users:
+
+- Food
+- Transport
+- Entertainment
+- Office
+- Gym
+
+---
+
+## Default Tags
+
+The system automatically seeds the following tags for new users:
+
+`Breakfast` `Lunch` `Dinner` `Treat` `Cafe` `Restaurant` `Train` `Vacation` `Birthday` `Diet` `MovieNight` `Tech` `CarStuff` `SelfCare` `Streaming`
+
+---
+
+## Application Flow
+
+```
+1. Launch the application
+2. Firebase initializes
+3. User signs in anonymously
+4. Default categories and tags are created
+5. Home screen displays expense list
+6. User adds expenses
+7. Data is stored in Firestore
+8. UI updates automatically
+```
+
+---
+
+## Setup Instructions
 
 ### 1. Clone the repository
+
 ```bash
-git clone https://github.com/your-username/expense-tracking-app.git
-cd expense-tracking-app
+git clone https://github.com/yourusername/expense-tracker-app.git
 ```
 
 ### 2. Install dependencies
-Make sure you have Flutter installed. If not, follow the installation guide on the [Flutter website](https://flutter.dev/docs/get-started/install).
 
-Once Flutter is set up, run:
 ```bash
 flutter pub get
 ```
 
-### 3. Run the app
-Launch the app using:
+### 3. Configure Firebase
+
+Install FlutterFire CLI:
+
+```bash
+dart pub global activate flutterfire_cli
+```
+
+Configure Firebase:
+
+```bash
+flutterfire configure
+```
+
+This will generate the required configuration files for your Firebase project.
+
+### 4. Run the app
+
 ```bash
 flutter run
 ```
 
 ---
 
-## ⚙️ Tech Stack
 
-- **Flutter**: Framework for building the UI
-- **Provider**: State management solution
-- **Dart**: Programming language used to build the app
-- **charts_flutter**: For data visualization (charts)
+## Future Improvements
 
----
+Planned enhancements include:
 
-## 💾 Local Storage
-
-We use **local storage** to save the user's expense data. This means your data will persist even after the app is restarted. For local storage, we use the following packages:
-
-- **shared_preferences** or **hive**
-
----
-
-## 🏅 Future Features
-
-Here are some additional features you can implement to enhance this app:
-
-1. **Sorting & Filtering**: Sort expenses by date, amount, or category. Add filters to view expenses by date ranges or categories.
-2. **Data Visualization**: Add more advanced charts to show monthly spending, category distribution, etc.
-3. **Currency Support**: Integrate currency APIs to convert expenses into different currencies.
-4. **Better UI/UX**: Improve animations, transitions, and error handling.
-5. **Financial APIs**: Implement APIs for automatic categorization of expenses and fetching live currency data.
-
----
-
-## 🤖 Contributing
-
-Feel free to fork this repository and make changes! If you want to contribute, here’s what you can do:
-
-1. Fork the repo.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Commit your changes (`git commit -am 'Add new feature'`).
-4. Push to your branch (`git push origin feature/your-feature`).
-5. Open a pull request!
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🎉 Acknowledgments
-
-- Thanks to [Flutter](https://flutter.dev/) for providing a great framework for app development.
-- Special thanks to [Provider](https://pub.dev/packages/provider) for managing state in Flutter apps.
-
-
----
-
-### 🚀 Happy coding and enjoy building your expense tracking app! 💰
-
-
+- Spending analytics dashboard
+- Charts and financial insights
+- Advanced filtering and search
+- Budgeting and spending goals
+- Export expenses to CSV/PDF
+- Offline data sync
+- Full user login system
+- Notification reminders
 
